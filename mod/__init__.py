@@ -1,6 +1,5 @@
-from flask import Flask, request
-from flask_restful import Resource, Api, reqparse
-import requests
+from flask import Flask, request, render_template
+from flask_restful import Resource, Api
 
 app = Flask(__name__)
 api = Api()
@@ -11,23 +10,32 @@ records = [[1, 1, 1, "20.10.2022", 100],
            [2, 1, 1, "20.10.2022", 100],
            [1, 2, 1, "20.10.2022", 100],
            [1, 7, 1, "20.10.2022", 100]]
-@app.post('/user')
-def create_user():
-    new_one = request.json
-    users.append(new_one)
-    return users
 
-@app.post('/category')
+@app.route("/user", methods=["POST","GET"])
+def create_user_post():
+    if request.method == "POST":
+      id = request.form['id']
+      user_name = request.form['user_name']
+      users.append([id, user_name])
+      return (render_template('user.html'))
+
+@app.route('/category')
 def create_category():
-    new_one = request.json
-    categories.append(new_one)
-    return categories
+    if request.method == "POST":
+        id = request.form['id']
+        category_name = request.form['category_name']
+        categories.append([id, category_name])
+        return (render_template('record.html'))
 
 @app.post('/record')
 def create_record():
-    new_one = request.json
-    records.append(new_one)
-    return records
+    if request.method == "POST":
+        id = request.form['id']
+        user_id = request.form['User_id']
+        category_id = request.form['category_id']
+        record_data = request.form['record_data']
+        record_sum = request.form['record_sum']
+        return (render_template('record.html'))
 
 class Main(Resource):
     def get(self, user_id):
